@@ -156,7 +156,9 @@ export class GitHubReleaser implements Releaser {
     params: Parameters<GitHub["rest"]["repos"]["generateReleaseNotes"]>[0]
   ): Promise<string> {
     try {
-      const { data } = await this.github.rest.repos.generateReleaseNotes(params);
+      const { data } = await this.github.rest.repos.generateReleaseNotes(
+        params
+      );
 
       if (!data.body) {
         throw new Error("No release body generated");
@@ -247,11 +249,11 @@ export const release = async (
   const generate_release_notes = config.input_generate_release_notes;
 
   const latestTag: string | undefined = !previous_tag
-      ? await releaser.getLatestTag({
-          owner,
-          repo,
-        })
-      : undefined;
+    ? await releaser.getLatestTag({
+        owner,
+        repo,
+      })
+    : undefined;
 
   if (latestTag) {
     console.log(`🏷️ Latest tag related to a release is ${latestTag}`);
@@ -270,8 +272,12 @@ export const release = async (
       })
     : "";
 
-  if (generate_release_notes && previous_tag || latestTag) {
-    console.log(`Will generate release notes using ${previous_tag || latestTag} as previous tag`);
+  if ((generate_release_notes && previous_tag) || latestTag) {
+    console.log(
+      `Will generate release notes using ${
+        previous_tag || latestTag
+      } as previous tag`
+    );
   }
 
   body = body ? `${body}\n` : "";
@@ -319,10 +325,12 @@ export const release = async (
     const existingReleaseBody = existingRelease.data.body || "";
 
     if (config.input_append_body && workflowBody && existingReleaseBody) {
-      console.log('➕ Appending existing release body');
+      console.log("➕ Appending existing release body");
       body = body + existingReleaseBody + "\n" + workflowBody;
     } else {
-      console.log(`➕ Using ${workflowBody ? 'workflow body' : 'existing release body'}`);
+      console.log(
+        `➕ Using ${workflowBody ? "workflow body" : "existing release body"}`
+      );
       body = body + (workflowBody || existingReleaseBody);
     }
 
@@ -355,7 +363,7 @@ export const release = async (
       const workflowBody = releaseBody(config) || "";
 
       if (config.input_append_body && workflowBody) {
-        console.log('➕ Appending existing release body');
+        console.log("➕ Appending existing release body");
         body = body + workflowBody;
       }
 
